@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lumabloom</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root{
+    --rosa:#e8a8b0;
+    --rosa-suave:#f6d4d9;
+    --marron:#6d5c5c;
+    --fondo:#ffffff;
+    --texto:#333;
+}
+
+body{
+    margin:0;
+    font-family:'Segoe UI', sans-serif;
+    background:var(--fondo);
+    color:var(--texto);
+    transition:0.3s;
+}
+
+.dark-mode{
+    --fondo:#1e1e1e;
+    --texto:#f1f1f1;
+}
+
+/* HEADER */
+.banner{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:25px 40px;
+    background:white;
+    position:relative;
+    box-shadow:0 4px 12px rgba(0,0,0,0.05);
+}
+
+.social{
+    display:flex;
+    gap:20px;
+}
+
+.social a{
+    color:var(--rosa);
+    font-size:22px;
+    transition:0.3s;
+}
+
+.social a:hover{
+    transform:scale(1.2);
+}
+
+.logo{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+.logo img{
+    height:100px;
+}
+
+.right-icons{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.admin{
+    font-size:22px;
+    cursor:pointer;
+    color:var(--rosa);
+}
+
+.toggle{
+    cursor:pointer;
+    font-size:20px;
+    background:none;
+    border:none;
+}
+
+/* CATEGORÍAS */
+.categorias{
+    background:var(--rosa);
+    display:flex;
+    justify-content:center;
+    gap:50px;
+    padding:15px 0;
+    font-weight:600;
+}
+
+.categorias a{
+    text-decoration:none;
+    color:white;
+    font-size:16px;
+    transition:0.3s;
+}
+
+.categorias a:hover{
+    opacity:0.7;
+    transform:scale(1.05);
+}
+
+/* SLIDER */
+.slider{
+    width:100%;
+    height:450px;
+    position:relative;
+    overflow:hidden;
+}
+
+.slide{
+    position:absolute;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    opacity:0;
+    transition:opacity 1s ease-in-out;
+}
+
+.slide.active{
+    opacity:1;
+}
+
+/* LINEA ROSA DIVISORIA */
+.division-rosa{
+    height:14px; /* aun más gruesa */
+    background:var(--rosa);
+    margin:0; /* pegada al slider */
+}
+
+/* CATALOGO */
+.catalogo{
+    padding:50px 20px;
+    text-align:center;
+}
+
+.catalogo h2{
+    font-size:32px;
+    margin-bottom:30px;
+    color:var(--rosa);
+}
+
+.productos{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:25px;
+    padding:0 40px;
+}
+
+.producto{
+    background:white;
+    border-radius:10px;
+    padding:15px;
+    transition:0.3s;
+    cursor:pointer;
+}
+
+.producto img{
+    width:100%;
+    height:260px;
+    object-fit:cover;
+    border-radius:8px;
+    transition:0.3s;
+}
+
+.producto:hover{
+    transform:scale(0.96);
+    box-shadow:0 8px 20px #e8a8b0;
+}
+
+.producto:hover img{
+    opacity:0.85;
+}
+
+.producto h3{
+    margin:12px 0 6px;
+    font-size:18px;
+    color:var(--marron);
+}
+
+.producto p{
+    font-size:16px;
+    color:var(--rosa);
+    font-weight:600;
+}
+
+/* MODAL PRODUCTO */
+.product-detail{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    visibility:hidden;
+    opacity:0;
+    transition:0.3s;
+    z-index:1000;
+}
+
+.product-detail.active{
+    visibility:visible;
+    opacity:1;
+}
+
+.product-detail-content{
+    background:white;
+    padding:20px;
+    max-width:900px;
+    width:90%;
+    display:flex;
+    border-radius:10px;
+    position:relative;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+/* FLECHA CERRAR */
+.close-detail{
+    position:absolute;
+    top:15px;
+    right:15px; /* derecha */
+    font-size:28px;
+    cursor:pointer;
+    color:var(--rosa);
+}
+
+/* IZQUIERDA IMAGENES */
+.product-images{
+    flex:1 1 400px;
+}
+
+.product-images img.main-img{
+    width:100%;
+    height:400px;
+    object-fit:cover;
+    border-radius:10px;
+}
+
+.thumbs{
+    display:flex;
+    gap:10px;
+    margin-top:10px;
+}
+
+.thumbs img{
+    width:80px;
+    height:80px;
+    object-fit:cover;
+    border-radius:8px;
+    cursor:pointer;
+    border:2px solid transparent;
+}
+
+.thumbs img:hover, .thumbs img.active{
+    border:2px solid var(--rosa);
+}
+
+/* DERECHA INFO */
+.product-info{
+    flex:1 1 350px;
+}
+
+.product-info h1{
+    font-size:28px;
+    color:var(--rosa);
+    margin-bottom:15px;
+}
+
+.product-info p.description{
+    margin-bottom:15px;
+    line-height:1.5;
+}
+
+.product-info p.price{
+    font-size:22px;
+    font-weight:600;
+    color:var(--rosa);
+    margin-bottom:15px;
+}
+
+.product-info label{
+    font-weight:600;
+}
+
+.product-info input[type=number]{
+    width:60px;
+    padding:5px;
+    margin:10px 0 20px 0;
+    font-size:16px;
+    border-radius:5px;
+    border:1px solid #ccc;
+}
+
+.product-info button.whatsapp-btn{
+    background:var(--rosa);
+    color:white;
+    padding:12px 20px;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.3s;
+    margin-bottom:10px;
+}
+
+.product-info button.whatsapp-btn:hover{
+    opacity:0.85;
+}
+
+.share-icons{
+    display:flex;
+    gap:15px;
+    margin-top:10px;
+}
+
+.share-icons a{
+    color:var(--rosa);
+    font-size:24px;
+}
+
+/* FOOTER */
+.footer{
+    background:var(--rosa);
+    color:white;
+    text-align:center;
+    padding:40px 20px;
+}
+
+.footer-logo img{
+    height:180px;
+    margin-bottom:20px;
+}
+
+.footer-social{
+    display:flex;
+    justify-content:center;
+    gap:25px;
+    margin-top:15px;
+}
+
+.footer-social a{
+    color:white;
+    font-size:22px;
+    transition:0.3s;
+}
+
+.footer-social a:hover{
+    transform:scale(1.2);
+    opacity:0.8;
+}
+
+</style>
+</head>
+<body>
+
+<header class="banner">
+    <div class="social">
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-tiktok"></i></a>
+        <a href="#"><i class="fab fa-facebook"></i></a>
+    </div>
+
+    <div class="logo">
+        <img src="12.png" alt="Lumabloom Logo">
+    </div>
+
+    <div class="right-icons">
+        <a href="admin.html" class="admin"><i class="fas fa-user-shield"></i></a>
+        <button class="toggle" onclick="toggleMode()">🌙</button>
+    </div>
+</header>
+
+<nav class="categorias">
+    <a href="#">Ramos</a>
+    <a href="#">Regalos</a>
+    <a href="#">Tazas</a>
+    <a href="#">Peluches</a>
+    <a href="#">Personalizados</a>
+</nav>
+
+<section class="slider">
+    <img src="a.jpg" class="slide active">
+    <img src="b.jpg" class="slide">
+    <img src="c.jpg" class="slide">
+</section>
+
+<div class="division-rosa"></div> <!-- línea más gruesa -->
+
+<section class="catalogo">
+    <h2>Catálogo</h2>
+    <div class="productos">
+        <div class="producto" onclick="abrirDetalle('Ramo Rosado','Hermoso ramo rosado',['1.jpg','1a.jpg','1b.jpg'], '$29.990')">
+            <img src="1.jpg">
+            <h3>Ramo Rosado</h3>
+            <p>$29.990</p>
+        </div>
+        <div class="producto" onclick="abrirDetalle('Peluche con Flores','Adorable peluche con flores',['2.jpg','2a.jpg','2b.jpg'], '$24.990')">
+            <img src="2.jpg">
+            <h3>Peluche con Flores</h3>
+            <p>$24.990</p>
+        </div>
+        <div class="producto" onclick="abrirDetalle('Taza Personalizada','Taza única y personalizada',['3.jpg','3a.jpg','3b.jpg'], '$14.990')">
+            <img src="3.jpg">
+            <h3>Taza Personalizada</h3>
+            <p>$14.990</p>
+        </div>
+        <div class="producto" onclick="abrirDetalle('Caja Regalo Deluxe','Caja con sorpresa',['4.jpg','4a.jpg','4b.jpg'], '$39.990')">
+            <img src="4.jpg">
+            <h3>Caja Regalo Deluxe</h3>
+            <p>$39.990</p>
+        </div>
+        <div class="producto" onclick="abrirDetalle('Ramo de Tulipanes','Colorido ramo de tulipanes',['5.jpg','5a.jpg','5b.jpg'], '$34.990')">
+            <img src="5.jpg">
+            <h3>Ramo de Tulipanes</h3>
+            <p>$34.990</p>
+        </div>
+        <div class="producto" onclick="abrirDetalle('Peluche Gigante','Suave peluche gigante',['7.jpg','7a.jpg','7b.jpg'], '$49.990')">
+            <img src="6.jpg">
+            <h3>Peluche Gigante</h3>
+            <p>$49.990</p>
+        </div>
+                <div class="producto" onclick="abrirDetalle('Peluche Gigante','Suave peluche gigante',['7.jpg','7a.jpg','7b.jpg'], '$49.990')">
+            <img src="7.jpg">
+            <h3>Peluche Gigante</h3>
+            <p>$49.990</p>
+        </div>
+                <div class="producto" onclick="abrirDetalle('Peluche Gigante','Suave peluche gigante',['7.jpg','7a.jpg','7b.jpg'], '$49.990')">
+            <img src="8.jpg">
+            <h3>Peluche Gigante</h3>
+            <p>$49.990</p>
+        </div>
+                <div class="producto" onclick="abrirDetalle('Peluche Gigante','Suave peluche gigante',['7.jpg','7a.jpg','7b.jpg'], '$49.990')">
+            <img src="12.jpg">
+            <h3>Peluche Gigante</h3>
+            <p>$49.990</p>
+        </div>
+                <div class="producto" onclick="abrirDetalle('Peluche Gigante','Suave peluche gigante',['7.jpg','7a.jpg','7b.jpg'], '$49.990')">
+            <img src="10.jpg">
+            <h3>Peluche Gigante</h3>
+            <p>$49.990</p>
+        </div>
+    </div>
+</section>
+
+<!-- MODAL PRODUCTO -->
+<div class="product-detail" id="productDetail">
+    <div class="product-detail-content">
+        <span class="close-detail" onclick="cerrarDetalle()"><i class="fas fa-arrow-left"></i></span>
+        <div class="product-images">
+            <img src="" class="main-img" id="detailMainImg">
+            <div class="thumbs" id="thumbContainer"></div>
+        </div>
+        <div class="product-info">
+            <h1 id="detailTitle"></h1>
+            <p class="description" id="detailDesc"></p>
+            <p class="price" id="detailPrice"></p>
+            <label for="cantidad">Cantidad:</label>
+            <input type="number" id="detailCantidad" value="1" min="1">
+            <button class="whatsapp-btn" onclick="enviarWhatsAppDetalle()">Pedir por WhatsApp</button>
+            <div class="share-icons">
+                <a href="#" onclick="compartir('whatsapp')"><i class="fab fa-whatsapp"></i></a>
+                <a href="#" onclick="compartir('instagram')"><i class="fab fa-instagram"></i></a>
+                <a href="#" onclick="compartir('facebook')"><i class="fab fa-facebook"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="footer-logo">
+        <img src="12.png">
+    </div>
+    <p>© 2026 Lumabloom · Todos los derechos reservados</p>
+    <div class="footer-social">
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-tiktok"></i></a>
+        <a href="#"><i class="fab fa-facebook"></i></a>
+    </div>
+</footer>
+
+<script>
+function toggleMode(){ document.body.classList.toggle("dark-mode"); }
+
+let slides=document.querySelectorAll(".slide");
+let index=0;
+function changeSlide(){
+    slides[index].classList.remove("active");
+    index=(index+1)%slides.length;
+    slides[index].classList.add("active");
+}
+setInterval(changeSlide,7000);
+
+/* MODAL PRODUCTO */
+const productDetail = document.getElementById('productDetail');
+const detailMainImg = document.getElementById('detailMainImg');
+const detailTitle = document.getElementById('detailTitle');
+const detailDesc = document.getElementById('detailDesc');
+const thumbContainer = document.getElementById('thumbContainer');
+const detailPrice = document.getElementById('detailPrice');
+const detailCantidad = document.getElementById('detailCantidad');
+
+function abrirDetalle(title, desc, imgs, price){
+    detailTitle.textContent = title;
+    detailDesc.textContent = desc;
+    detailPrice.textContent = price;
+    detailCantidad.value = 1;
+    detailMainImg.src = imgs[0];
+
+    thumbContainer.innerHTML = '';
+    imgs.forEach((img,i)=>{
+        const t = document.createElement('img');
+        t.src = img;
+        if(i===0) t.classList.add('active');
+        t.onclick = () => {
+            detailMainImg.src = img;
+            thumbContainer.querySelectorAll('img').forEach(e=>e.classList.remove('active'));
+            t.classList.add('active');
+        };
+        thumbContainer.appendChild(t);
+    });
+
+    productDetail.classList.add('active');
+}
+
+function cerrarDetalle(){ productDetail.classList.remove('active'); }
+
+function enviarWhatsAppDetalle(){
+    const cantidad = detailCantidad.value;
+    const producto = detailTitle.textContent;
+    const mensaje = `Hola! Quiero comprar ${cantidad} ${producto}`;
+    const numero = "5129473241";
+    const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
+    window.open(url,'_blank');
+}
+
+function compartir(red){
+    const urlProducto = window.location.href;
+    if(red==='whatsapp'){
+        window.open(`https://wa.me/?text=${encodeURIComponent(urlProducto)}`,'_blank');
+    } else if(red==='instagram'){
+        window.open(`https://www.instagram.com/?url=${encodeURIComponent(urlProducto)}`,'_blank');
+    } else if(red==='facebook'){
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(urlProducto)}`,'_blank');
+    }
+}
+</script>
+
+</body>
+</html>
